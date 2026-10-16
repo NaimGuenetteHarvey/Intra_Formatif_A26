@@ -13,16 +13,27 @@ namespace SignalR.Hubs
 
         public override async Task OnConnectedAsync()
         {
+
             await base.OnConnectedAsync();
+            _pizzaManager.AddUser();
+            await Clients.All.SendAsync("UpdateNbUsers", _pizzaManager.NbConnectedUsers);
         }
 
         public override async Task OnDisconnectedAsync(Exception? exception)
         {
-            await base.OnConnectedAsync();
+            await base.OnDisconnectedAsync(exception);
+            _pizzaManager.RemoveUser();
+            await Clients.All.SendAsync("UpdateNbUsers", _pizzaManager.NbConnectedUsers);
+
         }
 
         public async Task SelectChoice(PizzaChoice choice)
         {
+          var groupe = _pizzaManager.GetGroupName(choice);
+
+            await Groups.AddToGroupAsync(Context.ConnectionId, groupe);
+            await Clients.Caller.SendAsync("UpdatePizzaPrice", _pizzaManager.GetPizzaPrice(choice));
+            await Clients.Caller.SendAsync("UpdateNbPizzasAndMoney", _pizzaManager.GetNbPizzas(choice), _pizzaManager.GetMoney(choice));
         }
 
         public async Task UnselectChoice(PizzaChoice choice)
