@@ -26,14 +26,17 @@ namespace Dessins.Controllers
             var drawSquare2 = new DrawSquare(2, 2);
             var wait2 = new Wait(1);
             var drawStar = new DrawStar(1, 3, 20);
-
+            var changeColorRed = new ChangeColor("red");
+            var changeColorYellow = new ChangeColor("yellow");
             var drawingEvents = new List<DrawingEvent>
             {
                 drawCircle,
                 wait,
+                changeColorRed,
                 drawSquare,
                 drawSquare2,
                 wait2,
+                changeColorYellow,    
                 drawStar
               
             };

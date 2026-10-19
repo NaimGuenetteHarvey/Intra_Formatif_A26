@@ -27,50 +27,53 @@ export default function Home() {
   async function afficherEvents1(){
     clearShapes();
     // TODO: Il faut appeler le serveur pour obtenir l'event retourné
-    const response = await axios.get("http://localhost:5269/api/GetDrawing1")
+    const response = await axios.get("http://localhost:5269/api/Dessins/GetDrawing1")
     const data = response.data;
     await applyEvents(data);
   }
-
-  async function afficherEvents2(){
+async function afficherEvents2(){
     clearShapes();
-    // TODO: Il faut appeler le serveur pour obtenir la séquence d'événements 2 (que vous devez créer sur le serveur)
-    const response = await axios.get("http://localhost:5269/api/GetDrawing2")
+
+    const response = await axios.get(
+        "http://localhost:5269/api/Dessins/GetDrawing2"
+    );
+
     const data = response.data;
-    await applyEvents(data);
-    for (let e of data)
-    {
-          await applyEvents(e);
-    }
-  }
-
-  async function applyEvents(event:any){
-    // TODO: Il faut traiter les événements reçus du serveur et dessiner les formes correspondantes
    
-    if (event.type == "Square")
-    {
-        drawSquare(event.x, event.y)
+    for (let e of data) {
+        await applyEvents(e);
     }
-    if (event.type == "Circle")
-    {
-      drawCircle(event.x, event.y)
-    }
-    if(event.type == "Star")
-    {
-      drawStar(event.x, event.y, event.innerRadius)
-    }
-    if (event.type == "Wait")
-    {
+}
 
-      await wait(event.secondes)
-    }
-     if (event.events){
+  async function applyEvents(event: any) {
+    // Traiter les événements reçus du serveur
 
-       for (let e of event.events) {
-         applyEvents(e);
+    if (event.type == "Square") {
+        drawSquare(event.x, event.y);
     }
-     }
-  }
+
+    if (event.type == "Circle") {
+        drawCircle(event.x, event.y);
+    }
+
+    if (event.type == "Star") {
+        drawStar(event.x, event.y, event.innerRadius);
+    }
+
+    if (event.type == "Wait") {
+        await wait(event.secondes);
+    }
+
+   if (event.type == "ChangeColor") {
+    currentColor.current = event.color;
+}
+
+    if (event.events) {
+        for (let e of event.events) {
+            await applyEvents(e);
+        }
+    }
+}
 
   // ATTENTION: Les méthodes suivantes n'ont pas besoin d'être modifiées pour répondre à la question
 
